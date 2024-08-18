@@ -6,9 +6,6 @@ from langchain_groq import ChatGroq
 import streamlit as st
 import os
 from dotenv import load_dotenv
-from gtts import gTTS
-import base64
-from io import BytesIO
 
 load_dotenv()
 
@@ -24,31 +21,10 @@ prompt = ChatPromptTemplate.from_messages(
 )
 
 # Streamlit UI
-st.title("Language Translation with Voice Assistant using LangChain and Groq API")
-
-# Language codes dictionary
-language_codes = {
-    "English": "en",
-    "Spanish": "es",
-    "French": "fr",
-    "German": "de",
-    "Chinese": "zh",
-    "Japanese": "ja",
-    "Korean": "ko",
-    "Italian": "it",
-    "Portuguese": "pt",
-    "Russian": "ru",
-    "Arabic": "ar",
-    "Hindi": "hi",
-    "Dutch": "nl",
-    "Greek": "el",
-    "Swedish": "sv",
-    "Turkish": "tr",
-    "Vietnamese": "vi"
-}
+st.title("Language Translation using LangChain and Groq API")
 
 # Adding more languages to the list
-languages = list(language_codes.keys())
+languages = ["English", "Spanish", "French", "German", "Chinese", "Japanese", "Korean", "Italian", "Portuguese", "Russian", "Arabic", "Hindi", "Dutch", "Greek", "Swedish", "Turkish", "Vietnamese"]
 
 source_language = st.selectbox("Select Source Language", languages)
 target_language = st.selectbox("Select Target Language", languages)
@@ -70,18 +46,3 @@ if inputText:
     # Display the translation result
     st.write(f"Translation ({source_language} to {target_language}):")
     st.markdown(f"**{translation}**")
-    
-    # Generate TTS
-    tts = gTTS(text=translation, lang=language_codes[target_language], slow=False)
-    
-    # Convert audio to bytes and play directly
-    audio_buffer = BytesIO()
-    tts.write_to_fp(audio_buffer)
-    audio_buffer.seek(0)
-    
-    audio_bytes = audio_buffer.read()
-    audio_b64 = base64.b64encode(audio_bytes).decode()
-
-    # Create an audio element in Streamlit
-    audio_html = f'<audio controls><source src="data:audio/mp3;base64,{audio_b64}" type="audio/mp3"></audio>'
-    st.markdown(audio_html, unsafe_allow_html=True)
